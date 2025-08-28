@@ -114,7 +114,7 @@
         }
 
         .sidebar-header h2 {
-            font-size: 16px; /* 폰트 크기 줄여서 짤림 방지 */
+            font-size: 16px; /* 폰트 크기 조정 */
             font-weight: 600;
             color: var(--bg-primary);
             white-space: nowrap; /* 텍스트 잘림 방지 */
@@ -311,18 +311,7 @@
             transform: translateY(-2px);
         }
 
-        .btn-admin {
-            background: rgba(255, 255, 255, 0.2);
-            color: var(--bg-primary);
-            width: 100%;
-            margin-top: 20px;
-            border-radius: 20px;
-        }
 
-        .btn-admin:hover {
-            background: rgba(255, 255, 255, 0.3);
-            transform: translateY(-2px);
-        }
 
         /* 메인 콘텐츠 */
         .main-content {
@@ -1222,8 +1211,8 @@
 
         // 대시보드 업데이트
         function updateDashboard() {
-            initializeFilters(); // 필터 버튼을 먼저 생성합니다.
             const filteredData = applyFilters(allData);
+            initializeFilters(); // 필터 버튼을 데이터 필터링 후에 생성합니다.
             updateSummaryStats(filteredData);
             updateCharts(filteredData);
             updateRecentAcquisitions(filteredData);
@@ -1989,23 +1978,13 @@
             });
         }
 
-        // 초기 로드 시 모든 아코디언 닫기
-        documen        // 초기 로드 시 모든 아코디언 닫기
         document.addEventListener("DOMContentLoaded", () => {
             loadData();
-            // 아코디언 초기화를 데이터 로드 후에 실행
-            setTimeout(() => {
-                initializeAccordion();
-                document.querySelectorAll(".accordion-item").forEach(item => {
-                    const header = item.querySelector(".accordion-header");
-                    const content = item.querySelector(".accordion-content");
-                    header.setAttribute("aria-expanded", "false");
-                    item.setAttribute("aria-expanded", "false");
-                    content.style.maxHeight = "0";
-                    content.style.opacity = "0";
-                    content.style.padding = "0 15px";
-                });
-            }, 500); // 데이터 로드 완료 후 아코디언 초기화
+            initializeAccordion();
+        });
+
+
+
         document.querySelectorAll(".chart-type-selector").forEach(selector => {
             selector.addEventListener("change", (event) => {
                 const chartId = event.target.id.replace("-chart-type", "");
