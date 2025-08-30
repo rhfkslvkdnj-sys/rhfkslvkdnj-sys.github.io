@@ -1171,38 +1171,28 @@
         // 데이터 로드
         async function loadData() {
             try {
-                showLoading('yearChartLoading');
-                showLoading('gradeChartLoading');
-                showLoading('regionChartLoading');
-                showLoading('genderAgeChartLoading');
-
                 const response = await fetch('./dashboard_data.json');
                 if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                    throw new Error('Network response was not ok ' + response.statusText);
                 }
                 allData = await response.json();
-                console.log('데이터 로드 완료. 총 데이터:', allData.length);
-                updateDashboard();
-                initializeFilters();
-
-                hideLoading('yearChartLoading');
-                hideLoading('gradeChartLoading');
-                hideLoading('regionChartLoading');
-                hideLoading('genderAgeChartLoading');
-
+                console.log("Data loaded successfully:", allData);
+                initializeDashboard();
             } catch (error) {
-                console.error('데이터 로드 중 오류 발생:', error);
-                document.getElementById('total-data-count').textContent = '데이터 로드 실패';
-                hideLoading('yearChartLoading');
-                hideLoading('gradeChartLoading');
-                hideLoading('regionChartLoading');
-                hideLoading('genderAgeChartLoading');
+                console.error('Error loading data:', error);
+                alert('데이터를 불러오는 데 실패했습니다. 파일을 확인해주세요.');
             }
         }
 
-        // 로딩 인디케이터 표시/숨김
-        function showLoading(chartId) {
-            document.getElementById(chartId).classList.add('active');
+        function initializeDashboard() {
+            initializeFilters();
+            initializeAccordion();
+            updateDashboard();
+        }
+
+        document.addEventListener("DOMContentLoaded", function() {
+            loadData();
+        });
         }
 
         function hideLoading(chartId) {
@@ -1212,15 +1202,11 @@
         // 대시보드 업데이트
         function updateDashboard() {
             const filteredData = applyFilters(allData);
-            initializeFilters(); // 필터 버튼을 데이터 필터링 후에 생성합니다.
-            updateSummaryStats(filteredData);
+            initializeFilters(); // 필터 버튼을 데이터 필터링 후에        function updateDashboard(filteredData) {
+            updateStatCards(filteredData);
             updateCharts(filteredData);
-            updateRecentAcquisitions(filteredData);
-            updateFilterCount(filteredData.length);
-            updateCurrentFiltersDisplay();
-        }
-
-        // 필터 적용 로직
+            updateFilterResult(filteredData);
+        }      // 필터 적용 로직
         function applyFilters(data) {
             // 데이터 필드명 매핑
             const fieldMapping = {
@@ -1414,7 +1400,7 @@
             showLoading(chartConfigs.gradeChart.loadingId);
             const gradeCounts = {};
             data.forEach(item => {
-                const grade = item[' 급수']; // 공백 포함 필드명
+               const grade = item["급수"];
                 gradeCounts[grade] = (gradeCounts[grade] || 0) + 1;
             });
 
@@ -1978,9 +1964,10 @@
             });
         }
 
-        document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", function() {
             loadData();
             initializeAccordion();
+            initializeFilters(); // 데이터 로드 및 아코디언 초기화 후 필터 초기화
         });
 
 
